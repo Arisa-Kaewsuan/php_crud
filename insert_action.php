@@ -1,9 +1,26 @@
 <?php 
-$fname = $_POST["fname"];
-$lname = $_POST["lname"];
-$phone = $_POST["phone"];   
-$email = $_POST["email"];
-$save = $_POST["save"];
+$fname = $email = $lname = $save = $phone = "";
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+  $fname = test_input($_POST["fname"]);
+  $lname = test_input($_POST["lname"]);
+  $phone = test_input($_POST["phone"]);
+  $email = test_input($_POST["email"]);
+  $save = test_input($_POST["save"]);
+}
+
+
+/* CHECK_1 : Don't access "insert_action" page via URL. */
+if (!isset($save)) {
+  header("Location: insert_form.php");
+  exit();
+}
+
+
+/* CHECK_2 : All inputs don't have whitespace */
+function test_input($data) {
+  $data = str_replace(' ', '', $data);
+  return $data;
+}
 
 echo $fname;
 echo $lname;
@@ -11,26 +28,9 @@ echo $phone;
 echo $email;
 echo $save;
 
-if (!isset($save)) {
-  header("Location: insert_form.php");
-  exit();
-}
 
-function test_input($data) {
-  $data = trim($data);
-  $data = stripslashes($data);
-  $data = htmlspecialchars($data);
-  return $data;
-}
+/* CHECK_3 : All inputs must be entered in order to be saved. */
 
-if (empty($_POST["name"])) {
-    $nameErr = "Name is required";
-}else {
-    $name = test_input($_POST["name"]);
-    // check if name only contains letters and whitespace
-    if (!preg_match("/^[a-zA-Z-' ]*$/",$name)) {
-      $nameErr = "Only letters and white space allowed";
-    }
-  }
+
 
 ?>
